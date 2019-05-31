@@ -41,9 +41,28 @@ describe "User", type: :feature do
     fill_in "user_password" , with: user.password
     find("input[type='submit']").click
     click_link "Ver"
-    expect(page).to have_content('Products#show')
+    expect(page).to have_content('Total a pagar:')
   end
 
 
+  #El usuario entra a su carrito de compras
+  it "The user enters his shopping cart" do
+    user = FactoryGirl.create(:user)
+    user.role = "regular"
+    user.save
+    visit "/users/sign_in"
+    fill_in "user_email"  , with:  user.email
+    fill_in "user_password" , with: user.password
+    find("input[type='submit']").click
+
+    visit "/purchases"
+    expect(page).to have_content('Tu carrito de compras')
+  end
+
+
+
+  # no puede pagar sin seleccionar metodo de pago
+  # 
+  #
 
 end

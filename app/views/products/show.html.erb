@@ -1,4 +1,4 @@
-<h1>Products#show</h1>
+
 
 <%= @product.name %><hr>
 <%= @product.description %><hr>
@@ -18,6 +18,11 @@
 
 <script type="text/javascript">
 
+  $( document ).ready(function() {
+    full_payment.value = price;
+    document.getElementById("cantidad_requerida").value = 1;
+  });
+
   // Precio del producto
   var price = parseFloat("<%= number_to_currency(@product.price, :unit => "").sub(',', '') %>")
 
@@ -25,7 +30,7 @@
   var full_payment = document.getElementById("total_a_pagar");
 
   // Nombre del Producto
-  var product_name = "<%=  @product.name %>"
+  var product_name = "<%=  @product.name %>";
 
   // Validacion para solo aceptar numeros
   function isNumber(evt) {
@@ -42,7 +47,7 @@
 
     if (product_quantity.value.length > 0) {
       if (product_quantity.value < 1) {
-        product_quantity.value = 1
+        product_quantity.value = 1;
       }
       full_payment.value = (price * product_quantity.value).toFixed(2);
     }
@@ -53,19 +58,19 @@
 
     product_quantity = document.getElementById("cantidad_requerida").value
     $.ajax({
-    type: 'post',
-      beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))},
-    global: false,
-    url: '/add_to_shopping_cart',
-    data: {
-      name: product_name,
-      priece: price,
-      quantity: product_quantity
-    },
-    success: function(x) {
-      
-    }
-  });
+      type: 'post',
+        beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))},
+      global: false,
+      url: '/add_to_shopping_cart',
+      data: {
+        name: product_name,
+        priece: price,
+        quantity: product_quantity
+      },
+      success: function(x) {
+        window.location.href = "http://localhost:3000";
+      }
+    });
   }
 
 </script>

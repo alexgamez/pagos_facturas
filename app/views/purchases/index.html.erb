@@ -1,0 +1,100 @@
+<p>Tu carrito de compras</p>
+
+<script type="text/javascript">
+  $('#exampleModal').on('shown.bs.modal', function () {
+    $('#myInput').trigger('focus')
+  })
+
+
+</script>
+<% if !@purchases.empty? %>
+
+  <table>
+    <thead>
+      <tr>
+        <th>name</th>
+        <th>cantidad</th>
+        <th>precio</th>
+        <th>pago</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <% total_payment = 0 %>
+        <% @purchases.each do |purchase| %>
+          <tr>
+            <td><%= purchase['product_name'] %></td>
+            <td><%= purchase['product_quantity'] %></td>
+            <td><%= purchase['product_price'] %></td>
+            <td><%= purchase['product_quantity'].to_i*purchase['product_price'].to_f %></td>
+            <% total_payment += purchase['product_quantity'].to_i*purchase['product_price'].to_f %>
+          </tr>
+        <% end %>
+    </tbody>
+  </table>
+  <hr>
+  Total a pagar = <%= total_payment %>
+  <hr>
+
+  metodo de pago <br>
+  <button type="button" class="btn btn-primary" >
+    ventanilla
+  </button>
+
+  <!-- Button trigger modal -->
+  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+    spei
+  </button>
+
+<% else %>
+  Sin datos
+<% end %>
+
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Pago con Tarjeta</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+
+        <form>
+          <div class="form-group">
+            <label for="exampleInputEmail1">Correo electronico</label>
+            <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" value= "<%= current_user.email %>">
+            <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+          </div>
+          <div class="form-group">
+            <label for="creditCardNumber">Numero de tarjeta</label>
+            <input type="text" class="form-control" id="creditCardNumber" placeholder="Ej. 857 487 ...">
+          </div>
+
+          <div class="form-group">
+            <label for="creditCardKeyNumber">Codigo (3 digito en la parte posterior de su tarjeta)</label>
+            <input type="password" class="form-control" id="creditCardKeyNumber" placeholder="...">
+          </div>
+
+          <div class="form-group">
+            <label for="creditCardKeyNumber">Importe</label>
+            <input type="text" class="form-control" id="fullPayment" value="<%= number_to_currency(total_payment) %>">
+          </div>
+
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+
+      </div>
+      <div class="modal-footer">
+        <!-- <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button> -->
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!--modal-->

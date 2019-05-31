@@ -5,7 +5,6 @@ class ProductsController < ApplicationController
 
   def show
     @product = Product.find(params[:id])
-    # session.delete(:shopping_cart)
   end
 
   def add_to_shopping_cart
@@ -17,18 +16,14 @@ class ProductsController < ApplicationController
     # Revisa si el carro de compra esta vacio
     # Agrega la compra
     if session[:shopping_cart].nil?
-      session[:shopping_cart] = { product_name => [product_quantity, product_price] }
+      session[:shopping_cart] = [{ "product_name" => product_name, "product_quantity" => product_quantity, "product_price" => product_price }]
     else
       # Si se compro un producto de nuevo, sustituye los datos
-      # if !session[:shopping_cart][product_name].nil?
-        session[:shopping_cart][product_name] = [product_quantity, product_price]
-      # else
-
-      # end
+      session[:shopping_cart] <<  { "product_name" => product_name, "product_quantity" => product_quantity, "product_price" => product_price }
     end
-    puts session[:shopping_cart]
+
     respond_to do |format|
-      format.json { render json: session[:shopping_cart][product_name] }
+      format.json { render json: 1 }
       format.js
     end
   end
