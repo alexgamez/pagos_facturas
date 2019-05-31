@@ -1,0 +1,71 @@
+<h1>Products#show</h1>
+
+<%= @product.name %><hr>
+<%= @product.description %><hr>
+<%= number_to_currency(@product.price) %><hr>
+
+
+<form class="" action="/" method="post" onsubmit="return false">
+  <label for="">Cantidad</label>
+    <input id="cantidad_requerida" type="number" name="cantidad" value="1" onkeyup="calculateFullPayment(this)" onkeypress="javascript:return isNumber(event)" />
+</form>
+
+
+<label for=""> Total a pagar: </label>
+<input id="total_a_pagar" type="text" name="" value="" readonly>
+
+<button type="button" name="button" onclick="addToShoppingCart()">Agregar al carrito</button>
+
+<script type="text/javascript">
+
+  // Precio del producto
+  var price = parseFloat("<%= number_to_currency(@product.price, :unit => "").sub(',', '') %>")
+
+  // elemento que contiene el pago total
+  var full_payment = document.getElementById("total_a_pagar");
+
+  // Nombre del Producto
+  var product_name = "<%=  @product.name %>"
+
+  // Validacion para solo aceptar numeros
+  function isNumber(evt) {
+    var iKeyCode = (evt.which) ? evt.which : evt.keyCode
+    if (iKeyCode != 46 && iKeyCode > 31 && (iKeyCode < 48 || iKeyCode > 57)){
+      return false;
+    }
+    return true;
+  }
+
+  // Calcula el total a pagar
+  // cantidad_de_producto * precio_producto
+  function calculateFullPayment(product_quantity){
+
+    if (product_quantity.value.length > 0) {
+      if (product_quantity.value < 1) {
+        product_quantity.value = 1
+      }
+      full_payment.value = (price * product_quantity.value).toFixed(2);
+    }
+  }
+
+  // Guarda la compra en el carrito de compras
+  function addToShoppingCart(){
+
+    product_quantity = document.getElementById("cantidad_requerida").value
+    $.ajax({
+    type: 'post',
+      beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))},
+    global: false,
+    url: '/add_to_shopping_cart',
+    data: {
+      name: product_name,
+      priece: price,
+      quantity: product_quantity
+    },
+    success: function(x) {
+      
+    }
+  });
+  }
+
+</script>
