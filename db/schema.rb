@@ -10,7 +10,35 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_05_31_150834) do
+ActiveRecord::Schema.define(version: 2019_06_03_174119) do
+
+  create_table "concepts", force: :cascade do |t|
+    t.integer "quantity"
+    t.integer "invoice_id"
+    t.integer "product_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "invoices", force: :cascade do |t|
+    t.date "creation_date"
+    t.date "end_date"
+    t.float "total"
+    t.integer "user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "status"
+  end
+
+  create_table "payments", force: :cascade do |t|
+    t.date "payment_date"
+    t.float "penalty"
+    t.integer "invoice_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "card_number"
+    t.string "form_of_pay"
+  end
 
   create_table "products", force: :cascade do |t|
     t.string "name"

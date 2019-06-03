@@ -2,7 +2,7 @@ class HomeController < ApplicationController
   def index
     if user_signed_in?
       if current_user.role == "admin"
-        # do something
+        redirect_to invoices_path
       else
         redirect_to products_path
       end

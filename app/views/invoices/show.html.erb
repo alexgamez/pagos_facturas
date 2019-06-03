@@ -1,0 +1,44 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Creation date:</strong>
+  <%= @invoice.creation_date %>
+</p>
+
+<p>
+  <strong>End date:</strong>
+  <%= @invoice.end_date %>
+</p>
+
+<p>
+  <strong>Total:</strong>
+  <%= @invoice.total %>
+</p>
+
+<p>
+  <strong>User:</strong>
+  <%= @invoice.user_id %>
+</p>
+
+
+<table>
+  <thead>
+    <tr>
+      <th>Producto</th>
+      <th>cantidad</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @invoice.concepts.each do |concept| %>
+      <tr>
+
+        <td><%= concept.product.name %></td>
+        <td><%= concept.quantity %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+
+<%= link_to 'Back', invoices_path %>

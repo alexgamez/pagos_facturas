@@ -14,3 +14,7 @@
 //= require activestorage
 //= require turbolinks
 //= require_tree .
+
+function goToHome(){
+  window.location.href = "http://localhost:3000";
+}

@@ -1,9 +1,6 @@
 <p>Tu carrito de compras</p>
 
 <script type="text/javascript">
-  $('#exampleModal').on('shown.bs.modal', function () {
-    $('#myInput').trigger('focus')
-  })
 
 
 </script>
@@ -37,36 +34,34 @@
   <hr>
 
   metodo de pago <br>
-  <button type="button" class="btn btn-primary" >
+  <button type="button" class="btn btn-primary" onclick="payWindow();">
     ventanilla
   </button>
 
   <!-- Button trigger modal -->
-  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#paymentSpeiModal">
     spei
   </button>
 
 <% else %>
-  Sin datos
+  Aun no compras nada
 <% end %>
 
 
-<!-- Modal -->
-<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<!-- Modal Spei -->
+<div class="modal fade" id="paymentSpeiModal" tabindex="-1" role="dialog" aria-labelledby="Label" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Pago con Tarjeta</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
+        <h5 class="modal-title" >Pago con Tarjeta</h5>
+        
       </div>
       <div class="modal-body">
 
-        <form>
+        <form id="formulario_spei" onsubmit="return false" >
           <div class="form-group">
-            <label for="exampleInputEmail1">Correo electronico</label>
-            <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" value= "<%= current_user.email %>">
+            <label for="Email1">Correo electronico</label>
+            <input type="email" class="form-control" id="Email1" aria-describedby="emailHelp" value= "<%= current_user.email %>">
             <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
           </div>
           <div class="form-group">
@@ -80,11 +75,11 @@
           </div>
 
           <div class="form-group">
-            <label for="creditCardKeyNumber">Importe</label>
+            <label for="">Importe</label>
             <input type="text" class="form-control" id="fullPayment" value="<%= number_to_currency(total_payment) %>">
           </div>
 
-          <button type="submit" class="btn btn-primary">Submit</button>
+          <button type="submit" class="btn btn-primary">Pagar</button>
         </form>
 
       </div>
@@ -95,6 +90,121 @@
     </div>
   </div>
 </div>
-
-
 <!--modal-->
+
+<!-- Modal Ventanilla -->
+<div class="modal fade" id="paymentWindowModal" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="Label" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" >Pago exitoso</h5>
+      </div>
+      <div class="modal-body">
+
+        <form id="formulario_ventanilla" onsubmit="return false" >
+
+          <div class="form-group">
+            <label for="invoiceFolio">Folio</label>
+            <input id="folio" type="text" class="form-control" id="fullPayment" value="">
+          </div>
+
+          <div class="form-group">
+            <label for="">Fecha de pago</label>
+            <input type="text" class="form-control" id="fecha_pago_ventanilla" value="<%= number_to_currency(total_payment) %>">
+          </div>
+
+          <div class="form-group">
+            <label for="">multa</label>
+            <input type="text" class="form-control" id="multa" value="">
+          </div>
+
+          <div class="form-group">
+            <label for="">Importe</label>
+            <input type="text" class="form-control" id="fullPayment_ventanilla" value="<%= number_to_currency(total_payment) %>">
+          </div>
+
+          <button type="submit" onclick="goToHome();" class="btn btn-primary">Continuar</button>
+        </form>
+
+      </div>
+      <div class="modal-footer">
+        <!-- <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button> -->
+      </div>
+    </div>
+  </div>
+</div>
+<!--modal-->
+
+
+
+<script type="text/javascript">
+
+  window.addEventListener('load', function(){
+    var formSpei = document.getElementById("formulario_spei");
+
+    // Formulario de pago por spei
+    formSpei.addEventListener('submit', function(){
+      var tarjeta = document.getElementById("creditCardNumber").value;
+      var codigo = document.getElementById("creditCardKeyNumber").value;
+
+      // debe tener exactamente 16 numeros
+      if (tarjeta.length < 16 || tarjeta.length > 16 || isNaN(tarjeta) ) {
+        console.log("EL numero de tarjeta debe tener 16 digitos");
+        console.log("EL numero de tarjeta Solo contiene numeros");
+        return false;
+      }
+
+      // debe tener exactamente 3 numeros
+      if (codigo.length < 3 || codigo.length > 3 || isNaN(codigo) ) {
+        console.log("EL numero de codigo debe tener 3 digitos");
+        console.log("EL numero de codigo Solo contiene numeros");
+        return false;
+      }
+
+      console.log("Datos correctos");
+      paySpei(tarjeta)
+
+    });
+  });
+
+  // continua con la compra
+  function paySpei(tarjeta){
+
+    $.ajax({
+      type: 'post',
+        beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))},
+      global: false,
+      url: '/pay_with_spei',
+      data: {
+        tarjeta: tarjeta
+      },
+      success: function(x) {
+        goToHome()
+      }
+    });
+  }
+
+  // genera factura y concepto de pago por Ventanilla
+  function payWindow(){
+
+    $.ajax({
+      type: 'post',
+        beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))},
+      global: false,
+      url: '/pay_per_window',
+      data: {
+      },
+      success: function(payment) {
+        total_a_pagar = "<%= total_payment %>"
+        total_a_pagar = parseFloat(total_a_pagar) + parseFloat(payment.penalty)
+        document.getElementById('fullPayment_ventanilla').value = total_a_pagar.toFixed(2);
+        document.getElementById("folio").value = payment.invoice_id
+        document.getElementById("fecha_pago_ventanilla").value = payment.payment_date
+        document.getElementById("multa").value = payment.penalty.toFixed(2);
+        $('#paymentWindowModal').modal('show');
+      }
+    });
+  }
+
+</script>

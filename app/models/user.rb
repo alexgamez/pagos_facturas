@@ -7,4 +7,6 @@ class User < ApplicationRecord
   # Nombre y rol siempre son necesarios
   validates :role, presence: true
   validates :name, presence: true
+
+  has_many :invoices
 end
