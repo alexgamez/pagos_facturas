@@ -1,34 +1,37 @@
-<p>Encunetra todo lo que necesites en un mismo lugar</p>
+<div class="container">
+  <div class="row">
+    <div class="col">
+      <h3>
+        Catalago
+        <small class="text-muted">Encuentra todo lo que necesites en un mismo lugar</small>
+      </h3>
+    </div>
+  </div>
 
-<table>
-  <thead>
-    <tr>
-      <th>name</th>
-      <th>description</th>
-      <th>precio</th>
-      <th colspan="2"></th>
-    </tr>
-  </thead>
+  <hr class="invisible">
 
-  <tbody>
-    <% @products.each do |product| %>
-      <tr>
-
-        <td><%= product.name %></td>
-        <td><%= product.description %></td>
-        <td><%= number_to_currency(product.price) %></td>
-        <td><%= link_to 'Ver', product %>
-
-        <!-- <td>
-          < %= link_to '<button type="button">Ver</button>'.html_safe, product %>
-        </td> -->
-        <!--
-        <td>< %= product.title %></td>
-        <td>< %= product.content %></td>
-        <td>< %= link_to 'Show', product %></td>
-        <td>< %= link_to 'Edit', edit_product_path(product) %></td>
-        <td>< %= link_to 'Destroy', product, method: :delete, data: { confirm: 'Are you sure?' } %></td> -->
-      </tr>
-    <% end %>
-  </tbody>
-</table>
+  <div class="row">
+    <div class="col">
+      <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">Nombre</th>
+            <th scope="col">Descripcion</th>
+            <th scope="col">Precio</th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @products.each do |product| %>
+            <tr>
+              <td><%= product.name %></td>
+              <td><%= product.description %></td>
+              <td><%= number_to_currency(product.price) %></td>
+              <td><%= link_to 'Ver', product  %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

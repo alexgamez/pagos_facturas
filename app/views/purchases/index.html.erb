@@ -1,52 +1,71 @@
-<p>Tu carrito de compras</p>
+<div class="container">
+  <div class="row">
+    <div class="col">
+      <h3>
+        Tu carrito de compras!!
+        <small class="text-muted">En esta seccion encontraras todas tus compras acumuladas</small>
+      </h3>
+    </div>
+  </div>
 
-<script type="text/javascript">
+  <hr class="invisible">
 
+  <div class="row">
+    <div class="col">
+      <% if !@purchases.empty? %>
 
-</script>
-<% if !@purchases.empty? %>
+        <table class="table">
+          <thead>
+            <tr>
+              <th scope="col">Nombre</th>
+              <th scope="col">Cantidad</th>
+              <th scope="col">Precio</th>
+              <th scope="col">Pago</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% total_payment = 0 %>
+              <% @purchases.each do |purchase| %>
+                <tr>
+                  <td><%= purchase['product_name'] %></td>
+                  <td><%= purchase['product_quantity'] %></td>
+                  <td><%= number_to_currency(purchase['product_price'] )%></td>
+                  <td><%= number_to_currency(purchase['product_quantity'].to_i*purchase['product_price'].to_f) %></td>
+                  <% total_payment += purchase['product_quantity'].to_i*purchase['product_price'].to_f %>
+                </tr>
+              <% end %>
+          </tbody>
+        </table>
 
-  <table>
-    <thead>
-      <tr>
-        <th>name</th>
-        <th>cantidad</th>
-        <th>precio</th>
-        <th>pago</th>
-      </tr>
-    </thead>
+        <div class="row">
+          <div class="col col-md-6 col-sm-12">
+            <form>
+              <label for=""> Total a pagar $: </label>
+              <input  type="text" class="form-control" value="<%= number_to_currency(total_payment) %>" readonly>
+            </form>
+            <hr class="invisible">
 
-    <tbody>
-      <% total_payment = 0 %>
-        <% @purchases.each do |purchase| %>
-          <tr>
-            <td><%= purchase['product_name'] %></td>
-            <td><%= purchase['product_quantity'] %></td>
-            <td><%= purchase['product_price'] %></td>
-            <td><%= purchase['product_quantity'].to_i*purchase['product_price'].to_f %></td>
-            <% total_payment += purchase['product_quantity'].to_i*purchase['product_price'].to_f %>
-          </tr>
-        <% end %>
-    </tbody>
-  </table>
-  <hr>
-  Total a pagar = <%= total_payment %>
-  <hr>
+          </div>
 
-  metodo de pago <br>
-  <button type="button" class="btn btn-primary" onclick="payWindow();">
-    ventanilla
-  </button>
+          <div class="col col-md-6 col-sm-12">
+            <form>
+              <label for=""> Metodo de pago: </label><br>
+              <button type="button" class="btn btn-primary btn-block" onclick="payWindow();">
+                Ventanilla
+              </button>
+              <button type="button" class="btn btn-primary btn-block" data-toggle="modal" data-target="#paymentSpeiModal">
+                SPEI
+              </button>
+            </form>
+          </div>
+        </div>
 
-  <!-- Button trigger modal -->
-  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#paymentSpeiModal">
-    spei
-  </button>
-
-<% else %>
-  Aun no compras nada
-<% end %>
-
+      <% else %>
+        Aun no compras nada
+      <% end %>
+    </div>
+  </div>
+</div>
 
 <!-- Modal Spei -->
 <div class="modal fade" id="paymentSpeiModal" tabindex="-1" role="dialog" aria-labelledby="Label" aria-hidden="true">
@@ -54,7 +73,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" >Pago con Tarjeta</h5>
-        
+
       </div>
       <div class="modal-body">
 
@@ -62,16 +81,21 @@
           <div class="form-group">
             <label for="Email1">Correo electronico</label>
             <input type="email" class="form-control" id="Email1" aria-describedby="emailHelp" value= "<%= current_user.email %>">
-            <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
           </div>
           <div class="form-group">
             <label for="creditCardNumber">Numero de tarjeta</label>
             <input type="text" class="form-control" id="creditCardNumber" placeholder="Ej. 857 487 ...">
+            <small id="" class="form-text text-muted">
+              Contiene 16 digitos
+            </small>
           </div>
 
           <div class="form-group">
             <label for="creditCardKeyNumber">Codigo (3 digito en la parte posterior de su tarjeta)</label>
             <input type="password" class="form-control" id="creditCardKeyNumber" placeholder="...">
+            <small id="" class="form-text text-muted">
+              Contiene 3 digitos
+            </small>
           </div>
 
           <div class="form-group">
@@ -84,8 +108,6 @@
 
       </div>
       <div class="modal-footer">
-        <!-- <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button> -->
       </div>
     </div>
   </div>
@@ -114,7 +136,7 @@
           </div>
 
           <div class="form-group">
-            <label for="">multa</label>
+            <label for="">Multa</label>
             <input type="text" class="form-control" id="multa" value="">
           </div>
 
@@ -128,15 +150,10 @@
 
       </div>
       <div class="modal-footer">
-        <!-- <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button> -->
       </div>
     </div>
   </div>
 </div>
-<!--modal-->
-
-
 
 <script type="text/javascript">
 
@@ -150,19 +167,13 @@
 
       // debe tener exactamente 16 numeros
       if (tarjeta.length < 16 || tarjeta.length > 16 || isNaN(tarjeta) ) {
-        console.log("EL numero de tarjeta debe tener 16 digitos");
-        console.log("EL numero de tarjeta Solo contiene numeros");
         return false;
       }
 
       // debe tener exactamente 3 numeros
       if (codigo.length < 3 || codigo.length > 3 || isNaN(codigo) ) {
-        console.log("EL numero de codigo debe tener 3 digitos");
-        console.log("EL numero de codigo Solo contiene numeros");
         return false;
       }
-
-      console.log("Datos correctos");
       paySpei(tarjeta)
 
     });

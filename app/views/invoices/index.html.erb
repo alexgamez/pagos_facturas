@@ -2,37 +2,31 @@
 
 <h1>Facturas</h1>
 
-<table>
+<table class="table">
   <thead>
     <tr>
-      <th>Fecha de emision</th>
-      <th>Fecha de vencimiento</th>
-      <th>Total $ </th>
-      <th>retraso (dias) </th>
-      <th>Multa </th>
-      <th>Cliente</th>
-      <th>Estado</th>
-      <th colspan="3"></th>
+      <th scope="col">#</th>
+      <th scope="col">Fecha de emision</th>
+      <th scope="col">Fecha de vencimiento</th>
+      <th scope="col">Total $</th>
+      <th scope="col">Multa</th>
+      <th scope="col">Cliente</th>
+      <th scope="col">Estado</th>
+      <th scope="col"></th>
     </tr>
   </thead>
-
   <tbody>
     <% @invoices.each do |invoice| %>
       <tr>
-        <td><%= invoice.creation_date %></td>
-        <td><%= invoice.end_date %></td>
-        <td><%= number_to_currency(invoice.total) %></td>
-
-        <td><%= (14.2857 * (invoice.creation_date - Date.today).to_i ).ceil %></td>
-        <!-- (Date.today - (Date.today - 14.day)).to_i  -->
-        <td><%= (invoice.creation_date - Date.today).to_i %></td>
-
-        <td><%= invoice.user.name %></td>
-        <td><%= invoice.status %></td>
-        <td><%= link_to 'Show', invoice %></td>
+        <td> <%= invoice['id'] %></td>
+        <td> <%= invoice['creation_date'] %></td>
+        <td> <%= invoice['end_date'] %></td>
+        <td> <%= number_to_currency(invoice['total']) %></td>
+        <td><%= Payment.find_by_invoice_id(invoice['id'].to_i).penalty %></td>
+        <td><%= User.find(invoice['user_id'].to_i).name %></td>
+        <td><%= invoice['status'] %></td>
+        <td><%= link_to "Ver Detalle",  invoice_path(invoice['id'].to_i) %></td>
       </tr>
     <% end %>
   </tbody>
 </table>
-
-<br>

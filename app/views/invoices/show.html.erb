@@ -1,44 +1,74 @@
-<p id="notice"><%= notice %></p>
+<div class="container">
+  <div class="row">
+    <div class="col">
+      <h3>
+        Factura #<%= @invoice.id %>
+      </h3>
+    </div>
+  </div>
 
-<p>
-  <strong>Creation date:</strong>
-  <%= @invoice.creation_date %>
-</p>
+  <hr>
 
-<p>
-  <strong>End date:</strong>
-  <%= @invoice.end_date %>
-</p>
+  <div class="row">
+    <div class="col">
+      <form>
+        <div class="form-group">
+          <label for="">Estado:</label>
+          <input type="text" class="form-control" value="<%= @invoice.status %>" readonly>
+        </div>
+        <div class="form-group">
+          <label for="">Fecha de creacion:</label>
+          <input type="text" class="form-control" value="<%= @invoice.creation_date %>" readonly>
+        </div>
+        <div class="form-group">
+          <label for="">Fecha de vencimiento</label>
+          <input type="text" class="form-control" value="<%= @invoice.end_date %>" readonly>
+        </div>
 
-<p>
-  <strong>Total:</strong>
-  <%= @invoice.total %>
-</p>
+        <div class="form-group">
+          <label for="">Total a pagar:</label>
+          <input type="text" class="form-control" value="<%= @invoice.total %>" readonly>
+        </div>
 
-<p>
-  <strong>User:</strong>
-  <%= @invoice.user_id %>
-</p>
+        <div class="form-group">
+          <label for="">Cliente:</label>
+          <input type="text" class="form-control" value="<%= @invoice.user.name %>" readonly>
+          <input type="text" class="form-control" value="<%= @invoice.user.email %>" readonly>
+        </div>
 
+      </form>
+    </div>
+    <div class="col">
 
-<table>
-  <thead>
-    <tr>
-      <th>Producto</th>
-      <th>cantidad</th>
-    </tr>
-  </thead>
+    </div>
+  </div>
 
-  <tbody>
-    <% @invoice.concepts.each do |concept| %>
-      <tr>
+  <hr class="invisible">
+  <div class="row">
+    <div class="col">
+      <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">Producto</th>
+            <th scope="col">Cantidad</th>
+            <th scope="col">Precio</th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
 
-        <td><%= concept.product.name %></td>
-        <td><%= concept.quantity %></td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
+        <tbody>
+          <% @invoice.concepts.each do |concept| %>
+            <tr>
+              <td><%= concept.product.name %></td>
+              <td><%= concept.quantity %></td>
+              <td><%= concept.product.price %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
 
-
-<%= link_to 'Back', invoices_path %>
+  </div>
+</div>
+<!--
+< %= link_to 'Regresar', invoices_path %> -->

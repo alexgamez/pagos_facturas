@@ -1,10 +1,10 @@
 class InvoicesController < ApplicationController
   before_action :set_invoice, only: [:show, :edit, :update, :destroy]
-
+  include InvoicesHelper
   # GET /invoices
   # GET /invoices.json
   def index
-    @invoices = Invoice.all
+    @invoices = fetch_invoices_redis
   end
 
   # GET /invoices/1

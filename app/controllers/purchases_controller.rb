@@ -52,9 +52,6 @@ class PurchasesController < ApplicationController
       Concept.create(quantity:purchase['product_quantity'].to_i, invoice_id:invoice.id, product_id: product_id )
     end
 
-    # Vacia carrito
-    session.delete(:shopping_cart)
-
     dias_atraso = rand(0..30)
     multa = (14.2857 * rand(0..30).to_i )
     fecha_pago = Date.today + dias_atraso.day
@@ -62,8 +59,10 @@ class PurchasesController < ApplicationController
     # Genera Pago
     payment = Payment.create(payment_date:fecha_pago, penalty: multa, invoice_id:invoice.id, card_number:nil ,form_of_pay: "ventanilla")
 
-
-    # PDF
+    # Vacia carrito
+    session.delete(:shopping_cart)
+    
+    InvoiceJobJob.set(wait: 1.day).perform_later(invoice.id)
 
     respond_to do |format|
       format.json { render json: payment}
