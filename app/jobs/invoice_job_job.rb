@@ -4,4 +4,5 @@ class InvoiceJobJob < ApplicationJob
   def perform(invoice_id)
     Invoice.find(invoice_id).update(status:"pagada")
   end
+
 end

@@ -23,13 +23,11 @@ class PurchasesController < ApplicationController
       Concept.create(quantity:purchase['product_quantity'].to_i, invoice_id:invoice.id, product_id: product_id )
     end
 
-    # Genera Pago
-    Payment.create(payment_date:Date.today, penalty:0.0, invoice_id:invoice.id, card_number:target ,form_of_pay: "spei")
-
     # Vacia carrito
     session.delete(:shopping_cart)
 
-    # PDF
+    # Genera Pago
+    Payment.create(payment_date:Date.today, penalty:0.0, invoice_id:invoice.id, card_number:target ,form_of_pay: "spei")
 
     respond_to do |format|
       format.json { render json: 1 }
@@ -61,8 +59,8 @@ class PurchasesController < ApplicationController
 
     # Vacia carrito
     session.delete(:shopping_cart)
-    
-    InvoiceJobJob.set(wait: 1.day).perform_later(invoice.id)
+
+    InvoiceJobJob.set(wait: 5.second).perform_later(invoice.id)
 
     respond_to do |format|
       format.json { render json: payment}
@@ -70,18 +68,3 @@ class PurchasesController < ApplicationController
     end
   end
 end
-
-# rails generate scaffold Invoice game:string score:integer
-# rails generate scaffold Invoice creation_date:date end_date:date total:float user_id:integer
-#
-# rails generate model Concept quantity:integer invoice_id:integer product_id:integer
-# rails generate model Payment payment_date:date penalty:float invoice_id:integer
-#
-# Payments
-# concept
-
-# way to pay
-# card_number
-#
-# add_column :payments, :card_number, :integer
-# add_column :payments, :form_of_pay, :string

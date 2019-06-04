@@ -1,4 +1,6 @@
 class Invoice < ApplicationRecord
+  after_create_commit { InvoiceJob.perform_later self }  
+  after_update_commit { InvoiceJob.perform_later self } 
   belongs_to :user
   has_many :concepts
 

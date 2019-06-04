@@ -103,7 +103,7 @@
             <input type="text" class="form-control" id="fullPayment" value="<%= number_to_currency(total_payment) %>">
           </div>
 
-          <button type="submit" class="btn btn-primary">Pagar</button>
+          <button type="submit" onclick="startPaySpei();" class="btn btn-primary">Pagar</button>
         </form>
 
       </div>
@@ -157,27 +157,28 @@
 
 <script type="text/javascript">
 
-  window.addEventListener('load', function(){
-    var formSpei = document.getElementById("formulario_spei");
+  // window.addEventListener( 'load', function(){
 
-    // Formulario de pago por spei
-    formSpei.addEventListener('submit', function(){
-      var tarjeta = document.getElementById("creditCardNumber").value;
-      var codigo = document.getElementById("creditCardKeyNumber").value;
+  // Formulario de pago por spei
+  function startPaySpei(){
 
-      // debe tener exactamente 16 numeros
-      if (tarjeta.length < 16 || tarjeta.length > 16 || isNaN(tarjeta) ) {
-        return false;
-      }
+    var tarjeta = document.getElementById("creditCardNumber").value;
+    var codigo = document.getElementById("creditCardKeyNumber").value;
 
-      // debe tener exactamente 3 numeros
-      if (codigo.length < 3 || codigo.length > 3 || isNaN(codigo) ) {
-        return false;
-      }
-      paySpei(tarjeta)
+    // debe tener exactamente 16 numeros
+    if (tarjeta.length != 16 || isNaN(tarjeta) ) {
+      return false;
+    }
 
-    });
-  });
+    // debe tener exactamente 3 numeros
+    if (codigo.length != 3 || isNaN(codigo) ) {
+      return false;
+    }
+
+    paySpei(tarjeta)
+
+  }
+  // } ) ;
 
   // continua con la compra
   function paySpei(tarjeta){
