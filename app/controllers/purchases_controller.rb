@@ -60,7 +60,8 @@ class PurchasesController < ApplicationController
     # Vacia carrito
     session.delete(:shopping_cart)
 
-    InvoiceJobJob.set(wait: 5.second).perform_later(invoice.id)
+    #InvoiceJobJob.set(wait: 1.day).perform_later(invoice.id)
+    InvoiceJobJob.set(wait: 1.minute).perform_later(invoice.id)
 
     respond_to do |format|
       format.json { render json: payment}

@@ -21,7 +21,7 @@ describe "User", type: :feature do
     fill_in "user_email"  , with:  user.email
     fill_in "user_password" , with: user.password
     find("input[type='submit']").click
-    expect(page).to have_content('Encunetra todo lo que necesites en un mismo lugar')
+    expect(page).to have_content('Encuentra todo lo que necesites en un mismo lugar')
   end
 
   # Redirecciona a inicio de sesion, si no se ha iniciado sesion aun
@@ -41,7 +41,7 @@ describe "User", type: :feature do
     fill_in "user_password" , with: user.password
     find("input[type='submit']").click
     click_link "Ver"
-    expect(page).to have_content('Total a pagar:')
+    expect(page).to have_content('Agregar al carrito')
   end
 
 
@@ -54,15 +54,30 @@ describe "User", type: :feature do
     fill_in "user_email"  , with:  user.email
     fill_in "user_password" , with: user.password
     find("input[type='submit']").click
-
     visit "/purchases"
     expect(page).to have_content('Tu carrito de compras')
   end
 
+  # Usuario paga su carrito de comrpas
+  it "The user pay his/her shopping cart" do
+    user = FactoryGirl.create(:user)
+    user.role = "regular"
+    user.save
+    visit "/users/sign_in"
+    fill_in "user_email"  , with:  user.email
+    fill_in "user_password" , with: user.password
+    find("input[type='submit']").click
+
+    visit "/purchases"
+
+    #session[:user_id] = nil
+    #session[:shopping_cart] = [{ "product_name" => "Producto 1", "product_quantity" => 3, "product_price" => 300.50 }]
+    expect(page).to have_content('Tu carrito de compras')
+  end
 
 
   # no puede pagar sin seleccionar metodo de pago
-  # 
+  #
   #
 
 end

@@ -21,8 +21,33 @@ User.create(
   User.create(
     email: "usuario_#{i}@gmail.com",
     name: "Usuario_#{i}",
-    role: "client",
+    role: "regular",
     password: "password123",
     password_confirmation: "password123"
   )
+end
+
+100.times do |i|
+  description_aux  = "Descrip del Producto #{i} "*6
+  Product.create( name: "Prodcuto #{i}", description: description_aux, price: rand(48.50...2750)  )
+end
+
+20.times do |i|
+
+  total_payment = 0
+  Product.all.limit(20).each do |product|
+    total_payment += 3 * product.price
+  end
+
+  # Genera factura
+  invoice = Invoice.create(creation_date:Date.today,  end_date:Date.today, total: total_payment, user_id: User.last.id, status:"pagada")
+
+  # Genera concepto
+  Product.all.limit(20).each do |product|
+    Concept.create(quantity:3 , invoice_id:invoice.id, product_id: product.id )
+  end
+
+  # Genera Pago
+  Payment.create(payment_date:Date.today, penalty:0.0, invoice_id:invoice.id, card_number:1234567890123456 ,form_of_pay: "spei")
+
 end
